@@ -12,8 +12,7 @@ var sds = document.getElementById("dum");
 
 }
 </script>
- 
-</head>
+ </head>
 
 <body>
 
