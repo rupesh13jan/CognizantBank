@@ -69,10 +69,6 @@
     <url-pattern>/servlet/VerifyLogin1</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>verifyLogin1</servlet-name>
-    <url-pattern>/servlet/verifyLogin1</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>GetCon</servlet-name>
     <url-pattern>/servlet/GetCon</url-pattern>
   </servlet-mapping>
