@@ -1,0 +1,66 @@
+@CHARSET "ISO-8859-1";
+
+body {
+  background-color: lightgrey;
+}
+
+h1 {
+  color: Grey;
+  font-family: verdana;
+  font-size: 300%;
+}
+p  {
+  color: red;
+  font-family: courier;
+  font-size: 160%;
+}
+p {
+  border: 1px solid powderblue;
+}
+
+th {
+  text-align: left;
+}
+td {
+  font-family: verdana;
+}
+th, td {
+  padding: 5px;
+  text-align: left;
+}
+
+input[type=submit]  {
+background: #0066A2;
+color: white;
+border-style: outset;
+border-color: #0066A2;
+height: 30px;
+width: 100px;
+font: bold 15px arial, sans-serif;
+text-shadow:none;
+align: right;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: lightgrey;
+}
+
+li {
+  float: left;
+}
+
+li img {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+}
+
+li img:hover {
+  background-color: #111111;
+}
