@@ -1,17 +1,14 @@
 package com.journaldev.spring.controller;
 
-import java.text.DateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Locale;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.journaldev.spring.model.User;
-
 import api.apis.login.AccessLoginDB;
 import api.apis.login.LoginBean;
 import api.apis.login.RegisterBean;
@@ -26,10 +23,6 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		System.out.println("Home Page Requested, locale = " + locale);
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		String formattedDate = dateFormat.format(date);
-		model.addAttribute("serverTime", formattedDate);
 		return "Login";
 	}
 
@@ -37,12 +30,6 @@ public class HomeController {
 	public String login(Locale locale, Model model) {
 		System.out.println("Login Page Requested, locale = " + locale);
 		return "Login";
-	}
-
-	@RequestMapping(value = "/LoginAction", method = RequestMethod.GET)
-	public String loginAction(Locale locale, Model model) {
-		System.out.println("Login Action Requested, locale = " + locale);
-		return "LoginAction";
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.POST)
@@ -57,11 +44,15 @@ public class HomeController {
 
 			AccessLoginDB accessLoginDB = new AccessLoginDB();
 			String accessValidate = accessLoginDB.readLogin(user); // Connecting to DB and Business logic to verify the
-																	// user
+			System.out.println(accessLoginDB.getUserType(user)); // usertype value
+			int usertype = accessLoginDB.getUserType(user);
 			System.out.println("DB Value ::::" + accessValidate);
-			if (accessValidate.equals("SUCCESS")) // If function returns success then user will be rooted to Home page
+			if (accessValidate.equals("SUCCESS") && usertype == 1) // If function returns success then user will be
+																	// rooted to Home page
 			{
 				return "LoginAction";
+			} else if (accessValidate.equals("SUCCESS") && usertype == 2) {
+				return "LoginActionAdmin";
 			} else {
 
 				return "Login";
@@ -73,26 +64,28 @@ public class HomeController {
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public String register(@Validated RegisterBean reg, Model model) {
 		System.out.println("inserting profile values to db");
-		
-		System.out.println(reg.getFirstName());
 		model.addAttribute("firstName", reg.getFirstName());
 		model.addAttribute("lastName", reg.getLastName());
 		model.addAttribute("password", reg.getPassword());
 		model.addAttribute("contact", reg.getContact());
 		model.addAttribute("address", reg.getAddress());
 		model.addAttribute("username", reg.getUserName());
-		if (reg.getUserName().isEmpty() || reg.getPassword().isEmpty()) // Validation
+		model.addAttribute("username", reg.getEmail());
+		model.addAttribute("confirmpassword", reg.getConfirmpassword());
+		if ((reg.getUserName().isEmpty() || reg.getPassword().isEmpty())
+				&& (reg.getUserName() != reg.getConfirmpassword())) // Validation
 		{
 			return "RegistrationPage";
 		} else {
 
 			RegisterUserDB accessLoginDB = new RegisterUserDB();
-			String accessValidate = accessLoginDB.registerUser(reg); // Connecting to DB and Business logic to verify the
-																	// user
+			String accessValidate = accessLoginDB.registerUser(reg); // Connecting to DB and Business logic to verify
+																		// the
+																		// user
 			System.out.println("DB Value ::::" + accessValidate);
 			if (accessValidate.equals("SUCCESS")) // If function returns success then user will be rooted to Home page
 			{
-				return "LoginAction";
+				return "Login";
 			} else {
 
 				return "Login";
@@ -100,9 +93,29 @@ public class HomeController {
 		}
 
 	}
+
+	@RequestMapping(value = "/viewUsers/{id}", method = RequestMethod.GET)
+	public String viewUsers(@PathVariable("id") int id, Model model) {
+		System.out.println("View Users Page Requested");
+		AccessLoginDB accessLoginDB = new AccessLoginDB();
+		ArrayList accessValidate = accessLoginDB.getUsersBasedOnUserType(id);
+		model.addAttribute("allUsers", accessValidate);
+		return "displayUsers";
+	}
+
+	@RequestMapping(value = "/displayUsers/{id}", method = RequestMethod.GET)
+	public String viewUsersJson(@PathVariable("id") int id, Model model) {
+		System.out.println("View Users Page Requested");
+		AccessLoginDB accessLoginDB = new AccessLoginDB();
+		ArrayList accessValidate = accessLoginDB.getUsersBasedOnUserType(id);
+		model.addAttribute("allUsers", accessValidate);
+		return "Hi";
+
+	}
+
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String profile(@Validated User user, Model model) {
-		System.out.println("Registration Page Requested");		
+		System.out.println("Registration Page Requested");
 		return "RegistrationPage";
 	}
 
